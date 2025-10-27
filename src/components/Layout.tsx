@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { 
   LayoutDashboard, 
@@ -8,10 +8,7 @@ import {
   FileText,
   LogOut,
   Building2,
-  Menu,
-  X
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -19,7 +16,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
+  useSidebar,
+} from "@/components/ui/sidebar";
 import { mockTenants } from "@/lib/mockData";
+import { useState } from "react";
 
 interface LayoutProps {
   children: ReactNode;
@@ -33,154 +46,103 @@ const navItems = [
   { path: "/requests", icon: FileText, label: "Requests" },
 ];
 
-export default function Layout({ children }: LayoutProps) {
+function AppSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { open } = useSidebar();
   const [selectedTenant, setSelectedTenant] = useState("tenant-1");
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
     navigate("/login");
   };
 
   return (
-    <div className="flex h-screen bg-background">
-      {/* Sidebar */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-64 bg-sidebar border-r border-sidebar-border">
-        <div className="flex items-center gap-2 px-6 py-4 border-b border-sidebar-border">
-          <Building2 className="h-8 w-8 text-sidebar-primary" />
-          <div>
-            <h1 className="text-lg font-bold text-sidebar-foreground">OmniWare</h1>
-            <p className="text-xs text-sidebar-foreground/70">WMS Platform</p>
-          </div>
+    <Sidebar collapsible="icon">
+      <SidebarHeader className="border-b border-sidebar-border">
+        <div className="flex items-center gap-2 px-2 py-3">
+          <Building2 className="h-8 w-8 text-sidebar-primary flex-shrink-0" />
+          {open && (
+            <div className="flex-1 min-w-0">
+              <h1 className="text-lg font-bold text-sidebar-foreground truncate">OmniWare</h1>
+              <p className="text-xs text-sidebar-foreground/70 truncate">WMS Platform</p>
+            </div>
+          )}
         </div>
+      </SidebarHeader>
 
+      <SidebarContent>
         {/* Tenant Selector */}
-        <div className="px-4 py-4 border-b border-sidebar-border">
-          <label className="text-xs text-sidebar-foreground/70 mb-2 block">Active Tenant</label>
-          <Select value={selectedTenant} onValueChange={setSelectedTenant}>
-            <SelectTrigger className="bg-sidebar-accent text-sidebar-accent-foreground border-sidebar-border">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {mockTenants.map((tenant) => (
-                <SelectItem key={tenant.id} value={tenant.id}>
-                  {tenant.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        {open && (
+          <div className="px-4 py-4 border-b border-sidebar-border">
+            <label className="text-xs text-sidebar-foreground/70 mb-2 block">Active Tenant</label>
+            <Select value={selectedTenant} onValueChange={setSelectedTenant}>
+              <SelectTrigger className="bg-sidebar-accent text-sidebar-accent-foreground border-sidebar-border">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {mockTenants.map((tenant) => (
+                  <SelectItem key={tenant.id} value={tenant.id}>
+                    {tenant.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-4 space-y-1">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = location.pathname === item.path;
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
-                  isActive
-                    ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                    : "text-sidebar-foreground hover:bg-sidebar-accent"
-                }`}
-              >
-                <Icon className="h-5 w-5" />
-                <span className="font-medium">{item.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Logout */}
-        <div className="px-4 py-4 border-t border-sidebar-border">
-          <Button
-            variant="ghost"
-            className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent"
-            onClick={handleLogout}
-          >
-            <LogOut className="h-5 w-5 mr-3" />
-            Logout
-          </Button>
-        </div>
-      </aside>
-
-      {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-sidebar border-b border-sidebar-border">
-        <div className="flex items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-2">
-            <Building2 className="h-6 w-6 text-sidebar-primary" />
-            <h1 className="text-lg font-bold text-sidebar-foreground">OmniWare</h1>
-          </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="text-sidebar-foreground"
-          >
-            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </Button>
-        </div>
-        
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="bg-sidebar border-t border-sidebar-border">
-            <div className="px-4 py-3 border-b border-sidebar-border">
-              <label className="text-xs text-sidebar-foreground/70 mb-2 block">Active Tenant</label>
-              <Select value={selectedTenant} onValueChange={setSelectedTenant}>
-                <SelectTrigger className="bg-sidebar-accent text-sidebar-accent-foreground border-sidebar-border">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {mockTenants.map((tenant) => (
-                    <SelectItem key={tenant.id} value={tenant.id}>
-                      {tenant.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <nav className="px-4 py-3 space-y-1">
+        <SidebarGroup>
+          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.path;
                 return (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
-                      isActive
-                        ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                        : "text-sidebar-foreground hover:bg-sidebar-accent"
-                    }`}
-                  >
-                    <Icon className="h-5 w-5" />
-                    <span className="font-medium">{item.label}</span>
-                  </Link>
+                  <SidebarMenuItem key={item.path}>
+                    <SidebarMenuButton asChild isActive={isActive}>
+                      <Link to={item.path}>
+                        <Icon className="h-5 w-5" />
+                        <span>{item.label}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
                 );
               })}
-            </nav>
-            <div className="px-4 py-3 border-t border-sidebar-border">
-              <Button
-                variant="ghost"
-                className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent"
-                onClick={handleLogout}
-              >
-                <LogOut className="h-5 w-5 mr-3" />
-                Logout
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
 
-      {/* Main Content */}
-      <main className="flex-1 overflow-auto pt-16 lg:pt-0">
-        {children}
-      </main>
-    </div>
+      <SidebarFooter className="border-t border-sidebar-border">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton onClick={handleLogout}>
+              <LogOut className="h-5 w-5" />
+              <span>Logout</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+    </Sidebar>
+  );
+}
+
+export default function Layout({ children }: LayoutProps) {
+  return (
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full">
+        <AppSidebar />
+        <main className="flex-1 flex flex-col w-full">
+          <header className="h-14 border-b bg-background flex items-center px-4 gap-2 sticky top-0 z-10">
+            <SidebarTrigger />
+            <div className="flex-1" />
+          </header>
+          <div className="flex-1 overflow-auto">
+            {children}
+          </div>
+        </main>
+      </div>
+    </SidebarProvider>
   );
 }
