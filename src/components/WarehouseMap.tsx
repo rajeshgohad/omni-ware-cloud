@@ -28,10 +28,10 @@ function SingleWarehouseGrid({ warehouseNumber, locations }: SingleWarehouseGrid
 
   const getStatusColor = (status: number) => {
     switch (status) {
-      case 0: return "bg-green-500"; // Free
-      case 1: return "bg-amber-500"; // Occupied
-      case 2: return "bg-red-500"; // Blocked
-      default: return "bg-gray-300";
+      case 0: return "bg-green-200 border-2 border-green-400"; // Free
+      case 1: return "bg-amber-200 border-2 border-amber-400"; // Occupied
+      case 2: return "bg-red-200 border-2 border-red-400"; // Blocked
+      default: return "bg-gray-200 border-2 border-gray-400";
     }
   };
 
@@ -71,7 +71,7 @@ function SingleWarehouseGrid({ warehouseNumber, locations }: SingleWarehouseGrid
                       return (
                         <div
                           key={key}
-                          className="w-16 h-16 bg-background border border-border rounded"
+                          className="w-16 h-16 bg-gray-50 border-2 border-gray-200 rounded flex-shrink-0"
                         />
                       );
                     }
@@ -81,16 +81,16 @@ function SingleWarehouseGrid({ warehouseNumber, locations }: SingleWarehouseGrid
                     const hasMultiple = locsAtPosition.length > 1;
 
                     return (
-                      <Tooltip key={key}>
-                        <TooltipTrigger asChild>
-                          <div
-                            className={`w-16 h-16 ${getStatusColor(location.status)} rounded cursor-pointer hover:opacity-80 transition-opacity flex items-center justify-center relative`}
-                          >
-                            {hasMultiple && (
-                              <span className="absolute top-0 right-0 bg-background text-xs rounded-full w-5 h-5 flex items-center justify-center text-foreground font-bold">
-                                {locsAtPosition.length}
-                              </span>
-                            )}
+                        <Tooltip key={key}>
+                          <TooltipTrigger asChild>
+                            <div
+                              className={`w-16 h-16 ${getStatusColor(location.status)} rounded cursor-pointer hover:opacity-80 transition-opacity flex items-center justify-center relative flex-shrink-0`}
+                            >
+                              {hasMultiple && (
+                                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-md">
+                                  {locsAtPosition.length}
+                                </span>
+                              )}
                           </div>
                         </TooltipTrigger>
                         <TooltipContent>
@@ -140,15 +140,15 @@ export function WarehouseMap({ locations }: WarehouseMapProps) {
           {/* Legend */}
           <div className="flex gap-6 text-sm">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-green-500 rounded" />
+              <div className="w-4 h-4 bg-green-200 border-2 border-green-400 rounded" />
               <span>Free</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-amber-500 rounded" />
+              <div className="w-4 h-4 bg-amber-200 border-2 border-amber-400 rounded" />
               <span>Occupied</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-red-500 rounded" />
+              <div className="w-4 h-4 bg-red-200 border-2 border-red-400 rounded" />
               <span>Blocked</span>
             </div>
           </div>
