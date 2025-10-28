@@ -84,8 +84,11 @@ function SingleWarehouseGrid({ warehouseNumber, locations }: SingleWarehouseGrid
                         <Tooltip key={key}>
                           <TooltipTrigger asChild>
                             <div
-                              className={`w-16 h-16 ${getStatusColor(location.status)} rounded cursor-pointer hover:opacity-80 transition-opacity flex items-center justify-center relative flex-shrink-0`}
+                              className={`w-16 h-16 ${getStatusColor(location.status)} rounded cursor-pointer hover:opacity-80 transition-opacity flex flex-col items-center justify-center relative flex-shrink-0`}
                             >
+                              <span className="text-xs font-semibold text-gray-800">
+                                {String.fromCharCode(64 + location.coordinateX)}-{location.coordinateY.toString().padStart(2, '0')}-{location.coordinateZ.toString().padStart(2, '0')}
+                              </span>
                               {hasMultiple && (
                                 <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-md">
                                   {locsAtPosition.length}
