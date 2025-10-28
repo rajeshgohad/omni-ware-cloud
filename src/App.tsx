@@ -9,6 +9,8 @@ import StorageLocations from "./pages/StorageLocations";
 import Articles from "./pages/Articles";
 import TransportOrders from "./pages/TransportOrders";
 import Requests from "./pages/Requests";
+import Scan from "./pages/Scan";
+import Process from "./pages/Process";
 import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout";
 import { TenantProvider } from "./contexts/TenantContext";
@@ -30,6 +32,8 @@ const App = () => (
             <Route path="/articles" element={<Layout><Articles /></Layout>} />
             <Route path="/transport-orders" element={<Layout><TransportOrders /></Layout>} />
             <Route path="/requests" element={<Layout><Requests /></Layout>} />
+            <Route path="/scan" element={<Layout><Scan /></Layout>} />
+            <Route path="/process" element={<Layout><Process /></Layout>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -8,6 +8,8 @@ import {
   FileText,
   LogOut,
   Building2,
+  ScanLine,
+  Settings,
 } from "lucide-react";
 import {
   Select,
@@ -44,6 +46,8 @@ const navItems = [
   { path: "/articles", icon: Package, label: "Articles" },
   { path: "/transport-orders", icon: TruckIcon, label: "Transport Orders" },
   { path: "/requests", icon: FileText, label: "Requests" },
+  { path: "/scan", icon: ScanLine, label: "Scan" },
+  { path: "/process", icon: Settings, label: "Process" },
 ];
 
 function AppSidebar() {
