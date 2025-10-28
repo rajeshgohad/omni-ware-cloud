@@ -41,6 +41,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
+import { WarehouseMap } from "@/components/WarehouseMap";
 
 const formSchema = z.object({
   id: z.string().min(1, "Location ID is required"),
@@ -316,6 +317,9 @@ export default function StorageLocations() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Warehouse Map */}
+      <WarehouseMap locations={filteredLocations} />
 
       {/* Storage Locations Table */}
       <Card>
