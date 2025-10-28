@@ -6,7 +6,12 @@ interface WarehouseMapProps {
   locations: StorageLocation[];
 }
 
-export function WarehouseMap({ locations }: WarehouseMapProps) {
+interface SingleWarehouseGridProps {
+  warehouseNumber: string;
+  locations: StorageLocation[];
+}
+
+function SingleWarehouseGrid({ warehouseNumber, locations }: SingleWarehouseGridProps) {
   // Get the max X and Y coordinates to create the grid
   const maxX = Math.max(...locations.map(l => l.coordinateX), 0);
   const maxY = Math.max(...locations.map(l => l.coordinateY), 0);
@@ -39,16 +44,99 @@ export function WarehouseMap({ locations }: WarehouseMapProps) {
     }
   };
 
+  if (maxX === 0 || maxY === 0) {
+    return (
+      <div className="text-center text-muted-foreground py-8">
+        No locations available
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      <h3 className="font-semibold text-lg">{warehouseNumber}</h3>
+      <div className="overflow-auto p-4 bg-muted/30 rounded-lg">
+        <TooltipProvider>
+          <div className="inline-block">
+            {Array.from({ length: maxY }, (_, yIndex) => {
+              const y = maxY - yIndex; // Reverse Y to show from top to bottom
+              return (
+                <div key={y} className="flex gap-2">
+                  {Array.from({ length: maxX }, (_, xIndex) => {
+                    const x = xIndex + 1;
+                    const key = `${x}-${y}`;
+                    const locsAtPosition = locationMap.get(key) || [];
+                    
+                    if (locsAtPosition.length === 0) {
+                      return (
+                        <div
+                          key={key}
+                          className="w-16 h-16 bg-background border border-border rounded"
+                        />
+                      );
+                    }
+
+                    // If multiple locations at same X-Y, show the first one
+                    const location = locsAtPosition[0];
+                    const hasMultiple = locsAtPosition.length > 1;
+
+                    return (
+                      <Tooltip key={key}>
+                        <TooltipTrigger asChild>
+                          <div
+                            className={`w-16 h-16 ${getStatusColor(location.status)} rounded cursor-pointer hover:opacity-80 transition-opacity flex items-center justify-center relative`}
+                          >
+                            {hasMultiple && (
+                              <span className="absolute top-0 right-0 bg-background text-xs rounded-full w-5 h-5 flex items-center justify-center text-foreground font-bold">
+                                {locsAtPosition.length}
+                              </span>
+                            )}
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <div className="space-y-1">
+                            {locsAtPosition.map((loc, idx) => (
+                              <div key={idx} className="text-sm">
+                                <div className="font-semibold">{loc.id}</div>
+                                <div>Position: X{loc.coordinateX}-Y{loc.coordinateY}-Z{loc.coordinateZ}</div>
+                                <div>Type: {loc.type}</div>
+                                <div>Status: {getStatusLabel(loc.status)}</div>
+                                {idx < locsAtPosition.length - 1 && <hr className="my-1" />}
+                              </div>
+                            ))}
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
+        </TooltipProvider>
+      </div>
+    </div>
+  );
+}
+
+export function WarehouseMap({ locations }: WarehouseMapProps) {
+  // Group locations by warehouse
+  const warehouseGroups = {
+    "WH-001": locations.filter(loc => loc.warehouseNumber === "WH-001"),
+    "WH-002": locations.filter(loc => loc.warehouseNumber === "WH-002"),
+    "WH-003": locations.filter(loc => loc.warehouseNumber === "WH-003"),
+  };
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Warehouse Map</CardTitle>
+        <CardTitle>Warehouse Maps</CardTitle>
         <CardDescription>
-          Visual representation of storage locations (X-Y grid)
+          Visual representation of storage locations across all warehouses
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <div className="space-y-6">
           {/* Legend */}
           <div className="flex gap-6 text-sm">
             <div className="flex items-center gap-2">
@@ -65,66 +153,20 @@ export function WarehouseMap({ locations }: WarehouseMapProps) {
             </div>
           </div>
 
-          {/* Grid */}
-          <div className="overflow-auto p-4 bg-muted/30 rounded-lg">
-            <TooltipProvider>
-              <div className="inline-block">
-                {Array.from({ length: maxY }, (_, yIndex) => {
-                  const y = maxY - yIndex; // Reverse Y to show from top to bottom
-                  return (
-                    <div key={y} className="flex gap-1">
-                      {Array.from({ length: maxX }, (_, xIndex) => {
-                        const x = xIndex + 1;
-                        const key = `${x}-${y}`;
-                        const locsAtPosition = locationMap.get(key) || [];
-                        
-                        if (locsAtPosition.length === 0) {
-                          return (
-                            <div
-                              key={key}
-                              className="w-10 h-10 bg-background border border-border rounded"
-                            />
-                          );
-                        }
-
-                        // If multiple locations at same X-Y, show the first one
-                        const location = locsAtPosition[0];
-                        const hasMultiple = locsAtPosition.length > 1;
-
-                        return (
-                          <Tooltip key={key}>
-                            <TooltipTrigger asChild>
-                              <div
-                                className={`w-10 h-10 ${getStatusColor(location.status)} rounded cursor-pointer hover:opacity-80 transition-opacity flex items-center justify-center relative`}
-                              >
-                                {hasMultiple && (
-                                  <span className="absolute top-0 right-0 bg-background text-xs rounded-full w-4 h-4 flex items-center justify-center text-foreground font-bold">
-                                    {locsAtPosition.length}
-                                  </span>
-                                )}
-                              </div>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <div className="space-y-1">
-                                {locsAtPosition.map((loc, idx) => (
-                                  <div key={idx} className="text-sm">
-                                    <div className="font-semibold">{loc.id}</div>
-                                    <div>Position: X{loc.coordinateX}-Y{loc.coordinateY}-Z{loc.coordinateZ}</div>
-                                    <div>Type: {loc.type}</div>
-                                    <div>Status: {getStatusLabel(loc.status)}</div>
-                                    {idx < locsAtPosition.length - 1 && <hr className="my-1" />}
-                                  </div>
-                                ))}
-                              </div>
-                            </TooltipContent>
-                          </Tooltip>
-                        );
-                      })}
-                    </div>
-                  );
-                })}
-              </div>
-            </TooltipProvider>
+          {/* Three warehouses side by side */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <SingleWarehouseGrid 
+              warehouseNumber="WH-001" 
+              locations={warehouseGroups["WH-001"]} 
+            />
+            <SingleWarehouseGrid 
+              warehouseNumber="WH-002" 
+              locations={warehouseGroups["WH-002"]} 
+            />
+            <SingleWarehouseGrid 
+              warehouseNumber="WH-003" 
+              locations={warehouseGroups["WH-003"]} 
+            />
           </div>
 
           {/* Position Labels */}
