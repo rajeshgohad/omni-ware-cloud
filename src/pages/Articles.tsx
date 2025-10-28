@@ -18,15 +18,82 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Search, Plus, Filter, AlertTriangle, TrendingUp } from "lucide-react";
 import { mockArticles, ArticleType } from "@/lib/mockData";
 import { Progress } from "@/components/ui/progress";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { toast } from "sonner";
+
+const formSchema = z.object({
+  id: z.string().min(1, "Article ID is required"),
+  name: z.string().min(1, "Name is required"),
+  type: z.enum(["production_order", "complete_tool", "tool_component", "material", "production_equipment", "testing_equipment", "consumables", "special_material", "spare_parts"]),
+  weight: z.coerce.number().min(0, "Weight must be positive"),
+  unit: z.string().min(1, "Unit is required"),
+  minStock: z.coerce.number().min(0, "Min stock must be positive"),
+  reorderPoint: z.coerce.number().min(0, "Reorder point must be positive"),
+  maxStock: z.coerce.number().min(0, "Max stock must be positive"),
+  currentStock: z.coerce.number().min(0, "Current stock must be positive"),
+});
 
 export default function Articles() {
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [articles, setArticles] = useState(mockArticles);
 
-  const filteredArticles = mockArticles.filter((article) => {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      id: "",
+      name: "",
+      type: "material",
+      weight: 0,
+      unit: "kg",
+      minStock: 0,
+      reorderPoint: 0,
+      maxStock: 0,
+      currentStock: 0,
+    },
+  });
+
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    const newArticle = {
+      id: values.id,
+      name: values.name,
+      type: values.type as ArticleType,
+      weight: values.weight,
+      unit: values.unit,
+      minStock: values.minStock,
+      reorderPoint: values.reorderPoint,
+      maxStock: values.maxStock,
+      currentStock: values.currentStock,
+    };
+    setArticles([...articles, newArticle]);
+    toast.success("Article added successfully");
+    setDialogOpen(false);
+    form.reset();
+  };
+
+  const filteredArticles = articles.filter((article) => {
     const matchesSearch = 
       article.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       article.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -67,10 +134,161 @@ export default function Articles() {
           <h1 className="text-3xl font-bold text-foreground">Articles</h1>
           <p className="text-muted-foreground">Manage warehouse inventory items</p>
         </div>
-        <Button className="gap-2">
-          <Plus className="h-4 w-4" />
-          Add Article
-        </Button>
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="gap-2">
+              <Plus className="h-4 w-4" />
+              Add Article
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Add Article</DialogTitle>
+              <DialogDescription>
+                Create a new article in the warehouse inventory
+              </DialogDescription>
+            </DialogHeader>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Article ID</FormLabel>
+                      <FormControl>
+                        <Input placeholder="ART-001" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Article name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Type</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="production_order">Production Order</SelectItem>
+                          <SelectItem value="complete_tool">Complete Tool</SelectItem>
+                          <SelectItem value="tool_component">Tool Component</SelectItem>
+                          <SelectItem value="material">Material</SelectItem>
+                          <SelectItem value="production_equipment">Production Equipment</SelectItem>
+                          <SelectItem value="testing_equipment">Testing Equipment</SelectItem>
+                          <SelectItem value="consumables">Consumables</SelectItem>
+                          <SelectItem value="special_material">Special Material</SelectItem>
+                          <SelectItem value="spare_parts">Spare Parts</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="weight"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Weight</FormLabel>
+                        <FormControl>
+                          <Input type="number" step="0.01" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="unit"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Unit</FormLabel>
+                        <FormControl>
+                          <Input placeholder="kg" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <FormField
+                  control={form.control}
+                  name="minStock"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Min Stock</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="reorderPoint"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Reorder Point</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="maxStock"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Max Stock</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="currentStock"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Current Stock</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="w-full">Add Article</Button>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Stats Cards */}
@@ -80,7 +298,7 @@ export default function Articles() {
             <CardTitle className="text-sm font-medium">Total Articles</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockArticles.length}</div>
+            <div className="text-2xl font-bold">{articles.length}</div>
           </CardContent>
         </Card>
         <Card>
@@ -92,7 +310,7 @@ export default function Articles() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-destructive">
-              {mockArticles.filter(a => a.currentStock <= a.reorderPoint).length}
+              {articles.filter(a => a.currentStock <= a.reorderPoint).length}
             </div>
           </CardContent>
         </Card>
@@ -105,7 +323,7 @@ export default function Articles() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">
-              {mockArticles.filter(a => a.currentStock > a.reorderPoint).length}
+              {articles.filter(a => a.currentStock > a.reorderPoint).length}
             </div>
           </CardContent>
         </Card>
@@ -164,6 +382,7 @@ export default function Articles() {
                   <TableHead>Name</TableHead>
                   <TableHead>Type</TableHead>
                   <TableHead>Weight</TableHead>
+                  <TableHead>Min / Reorder / Max</TableHead>
                   <TableHead>Current Stock</TableHead>
                   <TableHead>Stock Level</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
@@ -180,10 +399,12 @@ export default function Articles() {
                       <TableCell>{getTypeBadge(article.type)}</TableCell>
                       <TableCell>{article.weight} {article.unit}</TableCell>
                       <TableCell>
-                        <div className="font-medium">{article.currentStock} {article.unit}</div>
-                        <div className="text-xs text-muted-foreground">
-                          Min: {article.minStock} | Max: {article.maxStock}
+                        <div className="text-sm font-mono">
+                          {article.minStock} / {article.reorderPoint} / {article.maxStock}
                         </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="font-medium">{article.currentStock} {article.unit}</div>
                       </TableCell>
                       <TableCell>
                         <div className="space-y-1">

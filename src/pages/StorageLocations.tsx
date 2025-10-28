@@ -45,6 +45,7 @@ import { WarehouseMap } from "@/components/WarehouseMap";
 
 const formSchema = z.object({
   id: z.string().min(1, "Location ID is required"),
+  warehouseNumber: z.string().min(1, "Warehouse is required"),
   type: z.enum(["standard", "inbound", "outbound", "removal", "picking", "rgb"]),
   coordinateX: z.coerce.number().min(1, "X coordinate must be at least 1"),
   coordinateY: z.coerce.number().min(1, "Y coordinate must be at least 1"),
@@ -65,6 +66,7 @@ export default function StorageLocations() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       id: "",
+      warehouseNumber: tenantWarehouseMap[selectedTenant],
       type: "standard",
       coordinateX: 1,
       coordinateY: 1,
@@ -75,9 +77,8 @@ export default function StorageLocations() {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    const tenantWarehouse = tenantWarehouseMap[selectedTenant];
     const newLocation = {
-      warehouseNumber: tenantWarehouse,
+      warehouseNumber: values.warehouseNumber,
       id: values.id,
       type: values.type as StorageLocationType,
       sequenceNumber: values.sequenceNumber,
@@ -144,7 +145,7 @@ export default function StorageLocations() {
             <DialogHeader>
               <DialogTitle>Add Storage Location</DialogTitle>
               <DialogDescription>
-                Create a new storage location for {tenantWarehouseMap[selectedTenant]}
+                Create a new storage location
               </DialogDescription>
             </DialogHeader>
             <Form {...form}>
@@ -158,6 +159,28 @@ export default function StorageLocations() {
                       <FormControl>
                         <Input placeholder="SL-001" {...field} />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="warehouseNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Warehouse</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select warehouse" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="WH-001">WH-001</SelectItem>
+                          <SelectItem value="WH-002">WH-002</SelectItem>
+                          <SelectItem value="WH-003">WH-003</SelectItem>
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
