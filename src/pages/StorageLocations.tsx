@@ -319,7 +319,7 @@ export default function StorageLocations() {
       </Card>
 
       {/* Warehouse Map */}
-      <WarehouseMap locations={filteredLocations} />
+      <WarehouseMap locations={locations} />
 
       {/* Storage Locations Table */}
       <Card>
