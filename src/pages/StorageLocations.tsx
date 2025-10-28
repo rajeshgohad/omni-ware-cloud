@@ -19,20 +19,24 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Search, Plus, Filter } from "lucide-react";
-import { mockStorageLocations, StorageLocationType, StorageStatus } from "@/lib/mockData";
+import { mockStorageLocations, StorageLocationType, StorageStatus, tenantWarehouseMap } from "@/lib/mockData";
+import { useTenant } from "@/contexts/TenantContext";
 
 export default function StorageLocations() {
+  const { selectedTenant } = useTenant();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
 
   const filteredLocations = mockStorageLocations.filter((location) => {
+    const tenantWarehouse = tenantWarehouseMap[selectedTenant];
+    const matchesTenant = location.warehouseNumber === tenantWarehouse;
     const matchesSearch = 
       location.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       location.warehouseNumber.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || location.status.toString() === statusFilter;
     const matchesType = typeFilter === "all" || location.type === typeFilter;
-    return matchesSearch && matchesStatus && matchesType;
+    return matchesTenant && matchesSearch && matchesStatus && matchesType;
   });
 
   const getStatusBadge = (status: StorageStatus) => {

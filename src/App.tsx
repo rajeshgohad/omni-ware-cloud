@@ -11,6 +11,7 @@ import TransportOrders from "./pages/TransportOrders";
 import Requests from "./pages/Requests";
 import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout";
+import { TenantProvider } from "./contexts/TenantContext";
 
 const queryClient = new QueryClient();
 
@@ -20,17 +21,19 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
-          <Route path="/storage-locations" element={<Layout><StorageLocations /></Layout>} />
-          <Route path="/articles" element={<Layout><Articles /></Layout>} />
-          <Route path="/transport-orders" element={<Layout><TransportOrders /></Layout>} />
-          <Route path="/requests" element={<Layout><Requests /></Layout>} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <TenantProvider>
+          <Routes>
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
+            <Route path="/storage-locations" element={<Layout><StorageLocations /></Layout>} />
+            <Route path="/articles" element={<Layout><Articles /></Layout>} />
+            <Route path="/transport-orders" element={<Layout><TransportOrders /></Layout>} />
+            <Route path="/requests" element={<Layout><Requests /></Layout>} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </TenantProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

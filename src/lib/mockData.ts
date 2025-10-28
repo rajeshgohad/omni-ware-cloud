@@ -27,7 +27,15 @@ export interface StorageLocation {
   status: StorageStatus;
 }
 
+// Map tenants to warehouses
+export const tenantWarehouseMap: Record<string, string> = {
+  "tenant-1": "WH-001",
+  "tenant-2": "WH-002",
+  "tenant-3": "WH-003",
+};
+
 export const mockStorageLocations: StorageLocation[] = [
+  // Tenant 1 (Acme Manufacturing) - WH-001
   { warehouseNumber: "WH-001", id: "SL-001", type: "standard", sequenceNumber: 1, coordinateX: 1, coordinateY: 1, coordinateZ: 1, status: 0 },
   { warehouseNumber: "WH-001", id: "SL-002", type: "standard", sequenceNumber: 2, coordinateX: 1, coordinateY: 1, coordinateZ: 2, status: 1 },
   { warehouseNumber: "WH-001", id: "SL-003", type: "inbound", sequenceNumber: 3, coordinateX: 2, coordinateY: 1, coordinateZ: 1, status: 0 },
@@ -36,6 +44,21 @@ export const mockStorageLocations: StorageLocation[] = [
   { warehouseNumber: "WH-001", id: "SL-006", type: "rgb", sequenceNumber: 6, coordinateX: 5, coordinateY: 1, coordinateZ: 1, status: 2 },
   { warehouseNumber: "WH-001", id: "SL-007", type: "standard", sequenceNumber: 7, coordinateX: 1, coordinateY: 2, coordinateZ: 1, status: 1 },
   { warehouseNumber: "WH-001", id: "SL-008", type: "standard", sequenceNumber: 8, coordinateX: 1, coordinateY: 2, coordinateZ: 2, status: 0 },
+  
+  // Tenant 2 (TechCorp Industries) - WH-002
+  { warehouseNumber: "WH-002", id: "SL-101", type: "standard", sequenceNumber: 1, coordinateX: 1, coordinateY: 1, coordinateZ: 1, status: 1 },
+  { warehouseNumber: "WH-002", id: "SL-102", type: "inbound", sequenceNumber: 2, coordinateX: 2, coordinateY: 1, coordinateZ: 1, status: 0 },
+  { warehouseNumber: "WH-002", id: "SL-103", type: "outbound", sequenceNumber: 3, coordinateX: 3, coordinateY: 1, coordinateZ: 1, status: 0 },
+  { warehouseNumber: "WH-002", id: "SL-104", type: "picking", sequenceNumber: 4, coordinateX: 4, coordinateY: 1, coordinateZ: 1, status: 1 },
+  { warehouseNumber: "WH-002", id: "SL-105", type: "rgb", sequenceNumber: 5, coordinateX: 5, coordinateY: 1, coordinateZ: 1, status: 0 },
+  
+  // Tenant 3 (Global Warehouse Co) - WH-003
+  { warehouseNumber: "WH-003", id: "SL-201", type: "standard", sequenceNumber: 1, coordinateX: 1, coordinateY: 1, coordinateZ: 1, status: 0 },
+  { warehouseNumber: "WH-003", id: "SL-202", type: "standard", sequenceNumber: 2, coordinateX: 1, coordinateY: 1, coordinateZ: 2, status: 0 },
+  { warehouseNumber: "WH-003", id: "SL-203", type: "inbound", sequenceNumber: 3, coordinateX: 2, coordinateY: 1, coordinateZ: 1, status: 1 },
+  { warehouseNumber: "WH-003", id: "SL-204", type: "outbound", sequenceNumber: 4, coordinateX: 3, coordinateY: 1, coordinateZ: 1, status: 2 },
+  { warehouseNumber: "WH-003", id: "SL-205", type: "picking", sequenceNumber: 5, coordinateX: 4, coordinateY: 1, coordinateZ: 1, status: 0 },
+  { warehouseNumber: "WH-003", id: "SL-206", type: "rgb", sequenceNumber: 6, coordinateX: 5, coordinateY: 1, coordinateZ: 1, status: 1 },
 ];
 
 export type ArticleType = 

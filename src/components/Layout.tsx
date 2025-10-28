@@ -32,7 +32,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { mockTenants } from "@/lib/mockData";
-import { useState } from "react";
+import { useTenant } from "@/contexts/TenantContext";
 
 interface LayoutProps {
   children: ReactNode;
@@ -50,7 +50,7 @@ function AppSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { open } = useSidebar();
-  const [selectedTenant, setSelectedTenant] = useState("tenant-1");
+  const { selectedTenant, setSelectedTenant } = useTenant();
 
   const handleLogout = () => {
     navigate("/login");
