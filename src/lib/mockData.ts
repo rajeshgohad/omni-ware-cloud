@@ -51,6 +51,18 @@ export const mockStorageLocations: StorageLocation[] = [
   { warehouseNumber: "WH-002", id: "SL-103", type: "outbound", sequenceNumber: 3, coordinateX: 3, coordinateY: 1, coordinateZ: 1, status: 0 },
   { warehouseNumber: "WH-002", id: "SL-104", type: "picking", sequenceNumber: 4, coordinateX: 4, coordinateY: 1, coordinateZ: 1, status: 1 },
   { warehouseNumber: "WH-002", id: "SL-105", type: "rgb", sequenceNumber: 5, coordinateX: 5, coordinateY: 1, coordinateZ: 1, status: 0 },
+  { warehouseNumber: "WH-002", id: "SL-106", type: "standard", sequenceNumber: 6, coordinateX: 1, coordinateY: 2, coordinateZ: 1, status: 0 },
+  { warehouseNumber: "WH-002", id: "SL-107", type: "standard", sequenceNumber: 7, coordinateX: 2, coordinateY: 2, coordinateZ: 1, status: 1 },
+  { warehouseNumber: "WH-002", id: "SL-108", type: "standard", sequenceNumber: 8, coordinateX: 3, coordinateY: 2, coordinateZ: 1, status: 2 },
+  { warehouseNumber: "WH-002", id: "SL-109", type: "picking", sequenceNumber: 9, coordinateX: 4, coordinateY: 2, coordinateZ: 1, status: 0 },
+  { warehouseNumber: "WH-002", id: "SL-110", type: "standard", sequenceNumber: 10, coordinateX: 5, coordinateY: 2, coordinateZ: 1, status: 1 },
+  { warehouseNumber: "WH-002", id: "SL-111", type: "standard", sequenceNumber: 11, coordinateX: 1, coordinateY: 3, coordinateZ: 1, status: 0 },
+  { warehouseNumber: "WH-002", id: "SL-112", type: "standard", sequenceNumber: 12, coordinateX: 2, coordinateY: 3, coordinateZ: 1, status: 0 },
+  { warehouseNumber: "WH-002", id: "SL-113", type: "removal", sequenceNumber: 13, coordinateX: 3, coordinateY: 3, coordinateZ: 1, status: 1 },
+  { warehouseNumber: "WH-002", id: "SL-114", type: "standard", sequenceNumber: 14, coordinateX: 4, coordinateY: 3, coordinateZ: 1, status: 2 },
+  { warehouseNumber: "WH-002", id: "SL-115", type: "standard", sequenceNumber: 15, coordinateX: 5, coordinateY: 3, coordinateZ: 1, status: 0 },
+  { warehouseNumber: "WH-002", id: "SL-116", type: "standard", sequenceNumber: 16, coordinateX: 1, coordinateY: 3, coordinateZ: 2, status: 1 },
+  { warehouseNumber: "WH-002", id: "SL-117", type: "standard", sequenceNumber: 17, coordinateX: 2, coordinateY: 3, coordinateZ: 2, status: 0 },
   
   // Tenant 3 (Global Warehouse Co) - WH-003
   { warehouseNumber: "WH-003", id: "SL-201", type: "standard", sequenceNumber: 1, coordinateX: 1, coordinateY: 1, coordinateZ: 1, status: 0 },
@@ -59,6 +71,22 @@ export const mockStorageLocations: StorageLocation[] = [
   { warehouseNumber: "WH-003", id: "SL-204", type: "outbound", sequenceNumber: 4, coordinateX: 3, coordinateY: 1, coordinateZ: 1, status: 2 },
   { warehouseNumber: "WH-003", id: "SL-205", type: "picking", sequenceNumber: 5, coordinateX: 4, coordinateY: 1, coordinateZ: 1, status: 0 },
   { warehouseNumber: "WH-003", id: "SL-206", type: "rgb", sequenceNumber: 6, coordinateX: 5, coordinateY: 1, coordinateZ: 1, status: 1 },
+  { warehouseNumber: "WH-003", id: "SL-207", type: "standard", sequenceNumber: 7, coordinateX: 1, coordinateY: 2, coordinateZ: 1, status: 1 },
+  { warehouseNumber: "WH-003", id: "SL-208", type: "standard", sequenceNumber: 8, coordinateX: 2, coordinateY: 2, coordinateZ: 1, status: 0 },
+  { warehouseNumber: "WH-003", id: "SL-209", type: "standard", sequenceNumber: 9, coordinateX: 3, coordinateY: 2, coordinateZ: 1, status: 0 },
+  { warehouseNumber: "WH-003", id: "SL-210", type: "picking", sequenceNumber: 10, coordinateX: 4, coordinateY: 2, coordinateZ: 1, status: 1 },
+  { warehouseNumber: "WH-003", id: "SL-211", type: "standard", sequenceNumber: 11, coordinateX: 5, coordinateY: 2, coordinateZ: 1, status: 2 },
+  { warehouseNumber: "WH-003", id: "SL-212", type: "standard", sequenceNumber: 12, coordinateX: 1, coordinateY: 3, coordinateZ: 1, status: 0 },
+  { warehouseNumber: "WH-003", id: "SL-213", type: "removal", sequenceNumber: 13, coordinateX: 2, coordinateY: 3, coordinateZ: 1, status: 1 },
+  { warehouseNumber: "WH-003", id: "SL-214", type: "standard", sequenceNumber: 14, coordinateX: 3, coordinateY: 3, coordinateZ: 1, status: 0 },
+  { warehouseNumber: "WH-003", id: "SL-215", type: "standard", sequenceNumber: 15, coordinateX: 4, coordinateY: 3, coordinateZ: 1, status: 1 },
+  { warehouseNumber: "WH-003", id: "SL-216", type: "standard", sequenceNumber: 16, coordinateX: 5, coordinateY: 3, coordinateZ: 1, status: 0 },
+  { warehouseNumber: "WH-003", id: "SL-217", type: "standard", sequenceNumber: 17, coordinateX: 1, coordinateY: 4, coordinateZ: 1, status: 2 },
+  { warehouseNumber: "WH-003", id: "SL-218", type: "standard", sequenceNumber: 18, coordinateX: 2, coordinateY: 4, coordinateZ: 1, status: 0 },
+  { warehouseNumber: "WH-003", id: "SL-219", type: "standard", sequenceNumber: 19, coordinateX: 3, coordinateY: 4, coordinateZ: 1, status: 1 },
+  { warehouseNumber: "WH-003", id: "SL-220", type: "standard", sequenceNumber: 20, coordinateX: 4, coordinateY: 4, coordinateZ: 1, status: 0 },
+  { warehouseNumber: "WH-003", id: "SL-221", type: "standard", sequenceNumber: 21, coordinateX: 5, coordinateY: 4, coordinateZ: 1, status: 1 },
+
 ];
 
 export type ArticleType = 
