@@ -350,7 +350,7 @@ export default function StorageLocations() {
                     <TableCell>{location.warehouseNumber}</TableCell>
                     <TableCell>{getTypeBadge(location.type)}</TableCell>
                     <TableCell className="font-mono text-sm">
-                      {location.coordinateX}-{location.coordinateY}-{location.coordinateZ}
+                      {String.fromCharCode(64 + location.coordinateX)}-{location.coordinateY.toString().padStart(2, '0')}-{location.coordinateZ.toString().padStart(2, '0')}
                     </TableCell>
                     <TableCell>{location.sequenceNumber}</TableCell>
                     <TableCell>{getStatusBadge(location.status)}</TableCell>
