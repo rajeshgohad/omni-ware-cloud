@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Camera, ScanLine } from "lucide-react";
+import { Camera, ScanLine, ArrowDownToLine, HandIcon, MoveIcon, ListChecks } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { mockArticles, mockStorageLocations } from "@/lib/mockData";
@@ -71,7 +71,7 @@ const Scan = () => {
               <CardDescription>Scanned item information</CardDescription>
             </CardHeader>
             <CardContent>
-              <dl className="space-y-4">
+              <dl className="space-y-4 mb-6">
                 <div className="flex justify-between py-3 border-b">
                   <dt className="font-medium text-muted-foreground">Code:</dt>
                   <dd className="font-semibold">{scannedItem.code}</dd>
@@ -93,6 +93,25 @@ const Scan = () => {
                   <dd className="font-semibold">{scannedItem.location}</dd>
                 </div>
               </dl>
+              
+              <div className="grid grid-cols-2 gap-3">
+                <Button variant="default" className="w-full">
+                  <ArrowDownToLine className="mr-2 h-4 w-4" />
+                  Putaway
+                </Button>
+                <Button variant="secondary" className="w-full">
+                  <HandIcon className="mr-2 h-4 w-4" />
+                  Pick
+                </Button>
+                <Button variant="outline" className="w-full">
+                  <MoveIcon className="mr-2 h-4 w-4" />
+                  Move
+                </Button>
+                <Button variant="outline" className="w-full">
+                  <ListChecks className="mr-2 h-4 w-4" />
+                  Count
+                </Button>
+              </div>
             </CardContent>
           </Card>
         )}
