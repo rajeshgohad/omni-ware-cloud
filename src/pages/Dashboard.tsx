@@ -7,7 +7,10 @@ import {
   FileText,
   AlertCircle,
   CheckCircle2,
-  Clock
+  Clock,
+  BarChart3,
+  Box,
+  ClipboardList
 } from "lucide-react";
 import { mockStorageLocations, mockArticles, mockTransportOrders, mockRequests } from "@/lib/mockData";
 
@@ -20,6 +23,10 @@ export default function Dashboard() {
   const lowStockArticles = mockArticles.filter(a => a.currentStock <= a.reorderPoint);
   const activeTransportOrders = mockTransportOrders.filter(t => t.status === "in_progress" || t.status === "pending").length;
   const activeRequests = mockRequests.filter(r => r.status !== "completed" && r.status !== "cancelled").length;
+  
+  const locationUtilization = totalLocations > 0 ? Math.round((occupiedLocations / totalLocations) * 100) : 0;
+  const activeArticles = mockArticles.filter(a => a.currentStock > 0).length;
+  const pendingOrders = mockTransportOrders.filter(t => t.status === "pending").length;
 
   const recentTransportOrders = mockTransportOrders.slice(0, 5);
   const recentRequests = mockRequests.slice(0, 5);
@@ -47,7 +54,7 @@ export default function Dashboard() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Total Storage Locations</CardTitle>
@@ -93,6 +100,39 @@ export default function Dashboard() {
           <CardContent>
             <div className="text-2xl font-bold">{activeRequests}</div>
             <p className="text-xs text-muted-foreground mt-2">Pending processing</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Location Utilization</CardTitle>
+            <BarChart3 className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{locationUtilization}%</div>
+            <p className="text-xs text-muted-foreground mt-2">{occupiedLocations} of {totalLocations} occupied</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Active Articles</CardTitle>
+            <Box className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{activeArticles}</div>
+            <p className="text-xs text-muted-foreground mt-2">Articles in stock</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Pending Orders</CardTitle>
+            <ClipboardList className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{pendingOrders}</div>
+            <p className="text-xs text-muted-foreground mt-2">Awaiting processing</p>
           </CardContent>
         </Card>
       </div>
