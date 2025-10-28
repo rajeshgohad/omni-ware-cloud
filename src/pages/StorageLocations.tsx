@@ -18,17 +18,80 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Search, Plus, Filter } from "lucide-react";
 import { mockStorageLocations, StorageLocationType, StorageStatus, tenantWarehouseMap } from "@/lib/mockData";
 import { useTenant } from "@/contexts/TenantContext";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { toast } from "sonner";
+
+const formSchema = z.object({
+  id: z.string().min(1, "Location ID is required"),
+  type: z.enum(["standard", "inbound", "outbound", "removal", "picking", "rgb"]),
+  coordinateX: z.coerce.number().min(1, "X coordinate must be at least 1"),
+  coordinateY: z.coerce.number().min(1, "Y coordinate must be at least 1"),
+  coordinateZ: z.coerce.number().min(1, "Z coordinate must be at least 1"),
+  sequenceNumber: z.coerce.number().min(1, "Sequence number must be at least 1"),
+  status: z.enum(["0", "1", "2"]),
+});
 
 export default function StorageLocations() {
   const { selectedTenant } = useTenant();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [locations, setLocations] = useState(mockStorageLocations);
 
-  const filteredLocations = mockStorageLocations.filter((location) => {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      id: "",
+      type: "standard",
+      coordinateX: 1,
+      coordinateY: 1,
+      coordinateZ: 1,
+      sequenceNumber: 1,
+      status: "0",
+    },
+  });
+
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    const tenantWarehouse = tenantWarehouseMap[selectedTenant];
+    const newLocation = {
+      warehouseNumber: tenantWarehouse,
+      id: values.id,
+      type: values.type as StorageLocationType,
+      sequenceNumber: values.sequenceNumber,
+      coordinateX: values.coordinateX,
+      coordinateY: values.coordinateY,
+      coordinateZ: values.coordinateZ,
+      status: parseInt(values.status) as StorageStatus,
+    };
+    setLocations([...locations, newLocation]);
+    toast.success("Storage location added successfully");
+    setDialogOpen(false);
+    form.reset();
+  };
+
+  const filteredLocations = locations.filter((location) => {
     const tenantWarehouse = tenantWarehouseMap[selectedTenant];
     const matchesTenant = location.warehouseNumber === tenantWarehouse;
     const matchesSearch = 
@@ -69,10 +132,141 @@ export default function StorageLocations() {
           <h1 className="text-3xl font-bold text-foreground">Storage Locations</h1>
           <p className="text-muted-foreground">Manage warehouse storage structure</p>
         </div>
-        <Button className="gap-2">
-          <Plus className="h-4 w-4" />
-          Add Location
-        </Button>
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="gap-2">
+              <Plus className="h-4 w-4" />
+              Add Location
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Add Storage Location</DialogTitle>
+              <DialogDescription>
+                Create a new storage location for {tenantWarehouseMap[selectedTenant]}
+              </DialogDescription>
+            </DialogHeader>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Location ID</FormLabel>
+                      <FormControl>
+                        <Input placeholder="SL-001" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Type</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="standard">Standard</SelectItem>
+                          <SelectItem value="inbound">Inbound</SelectItem>
+                          <SelectItem value="outbound">Outbound</SelectItem>
+                          <SelectItem value="removal">Removal</SelectItem>
+                          <SelectItem value="picking">Picking</SelectItem>
+                          <SelectItem value="rgb">RGB/ASRS</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="grid grid-cols-3 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="coordinateX"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>X</FormLabel>
+                        <FormControl>
+                          <Input type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="coordinateY"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Y</FormLabel>
+                        <FormControl>
+                          <Input type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="coordinateZ"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Z</FormLabel>
+                        <FormControl>
+                          <Input type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <FormField
+                  control={form.control}
+                  name="sequenceNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Sequence Number</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Status</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="0">Free</SelectItem>
+                          <SelectItem value="1">Occupied</SelectItem>
+                          <SelectItem value="2">Blocked</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="w-full">Add Location</Button>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Filters */}
