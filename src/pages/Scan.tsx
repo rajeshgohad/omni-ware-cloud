@@ -1,17 +1,23 @@
 import { useState } from "react";
-import { Camera, ScanLine, ArrowDownToLine, HandIcon, MoveIcon, ListChecks } from "lucide-react";
+import { Camera, ScanLine, ArrowDownToLine, HandIcon, MoveIcon, ListChecks, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { mockArticles, mockStorageLocations } from "@/lib/mockData";
+import { formatDistanceToNow } from "date-fns";
+
+
+interface ScannedItemType {
+  code: string;
+  name: string;
+  type: string;
+  weight: string;
+  location: string;
+  timestamp: Date;
+}
 
 const Scan = () => {
-  const [scannedItem, setScannedItem] = useState<{
-    code: string;
-    name: string;
-    type: string;
-    weight: string;
-    location: string;
-  } | null>(null);
+  const [scannedItem, setScannedItem] = useState<ScannedItemType | null>(null);
+  const [recentScans, setRecentScans] = useState<ScannedItemType[]>([]);
 
   const handleScan = () => {
     // Simulate scanning - in production, this would integrate with a real barcode scanner
@@ -22,13 +28,17 @@ const Scan = () => {
     );
 
     if (location) {
-      setScannedItem({
+      const newScan: ScannedItemType = {
         code: article.id,
         name: article.name,
         type: article.type,
         weight: `${article.weight} kg`,
-        location: `${String.fromCharCode(64 + location.coordinateX)}-${String(location.coordinateY).padStart(2, '0')}-${String(location.coordinateZ).padStart(2, '0')}`
-      });
+        location: `${String.fromCharCode(64 + location.coordinateX)}-${String(location.coordinateY).padStart(2, '0')}-${String(location.coordinateZ).padStart(2, '0')}`,
+        timestamp: new Date()
+      };
+      
+      setScannedItem(newScan);
+      setRecentScans(prev => [newScan, ...prev].slice(0, 10)); // Keep last 10 scans
     }
   };
 
@@ -111,6 +121,32 @@ const Scan = () => {
                   <ListChecks className="mr-2 h-4 w-4" />
                   Count
                 </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Recent Scans */}
+        {recentScans.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Scans</CardTitle>
+              <CardDescription>Previously scanned items</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {recentScans.map((scan, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                    <div className="flex-1">
+                      <p className="font-medium">{scan.name}</p>
+                      <p className="text-sm text-muted-foreground">{scan.code} • {scan.location}</p>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Clock className="h-4 w-4" />
+                      {formatDistanceToNow(scan.timestamp, { addSuffix: true })}
+                    </div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
