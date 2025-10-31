@@ -1,22 +1,22 @@
-# Welcome to your Lovable project
+# Welcome to your Demo project
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/6767d33c-6b22-496d-b8bb-15501f26afe7
+**URL**: https://Demo.dev/projects/6767d33c-6b22-496d-b8bb-15501f26afe7
 
 ## How can I edit this code?
 
 There are several ways of editing your application.
 
-**Use Lovable**
+**Use Demo**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/6767d33c-6b22-496d-b8bb-15501f26afe7) and start prompting.
+Simply visit the [Demo Project](https://Demo.dev/projects/6767d33c-6b22-496d-b8bb-15501f26afe7) and start prompting.
 
-Changes made via Lovable will be committed automatically to this repo.
+Changes made via Demo will be committed automatically to this repo.
 
 **Use your preferred IDE**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Demo.
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
@@ -62,12 +62,12 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/6767d33c-6b22-496d-b8bb-15501f26afe7) and click on Share -> Publish.
+Simply open [Demo](https://Demo.dev/projects/6767d33c-6b22-496d-b8bb-15501f26afe7) and click on Share -> Publish.
 
-## Can I connect a custom domain to my Lovable project?
+## Can I connect a custom domain to my Demo project?
 
 Yes, you can!
 
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Read more here: [Setting up a custom domain](https://docs.Demo.dev/features/custom-domain#custom-domain)
