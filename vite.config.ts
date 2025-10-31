@@ -6,15 +6,6 @@ import path from "path";
 export default defineConfig(async ({ mode }) => {
   const plugins: any[] = [react()];
 
-  if (mode === "development") {
-    try {
-      // @ts-ignore - optional dev-only dependency, not present in prod
-      const mod = await import("Demo-tagger");
-      if (mod?.componentTagger) plugins.push(mod.componentTagger());
-    } catch {
-      // not installed; ignore silently
-    }
-  }
 
   return {
     server: {
