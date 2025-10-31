@@ -9,7 +9,7 @@ export default defineConfig(async ({ mode }) => {
   if (mode === "development") {
     try {
       // @ts-ignore - optional dev-only dependency, not present in prod
-      const mod = await import("TCS-tagger");
+      const mod = await import("Demo-tagger");
       if (mod?.componentTagger) plugins.push(mod.componentTagger());
     } catch {
       // not installed; ignore silently
